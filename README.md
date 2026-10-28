@@ -32,3 +32,13 @@ qwen3.6-35b emitted 6 output tokens across 5 captured calls while the session
 claimed "all three surfaces healthy" with verify items still pending, and the
 transcript carried 68×402 + 20×429 errors. That is the exact failure class
 this product exists to catch mechanically.
+
+## find (v2) — dynamic "find the error" over ANY bundle
+
+`malachite find --bundle <tar.gz>`: flatten + ensemble detection, no training data,
+no hardcoded schema — features derived from whatever the bundle contains:
+error-pattern densities w/ retry-loop detection (402/429/401/403/ENOENT/crash/
+daemon-exit/timeout/DNS), IQR numeric outliers, empty-output model calls, parse
+corruption, and claim-vs-reality. Ranked findings; exit 2 = critical (>=9),
+1 = findings, 0 = clean. Verified on an unseen hephaistos-class bundle
+(daemon ENOENT spawn-fail loop + panic + false "verified healthy" claim).

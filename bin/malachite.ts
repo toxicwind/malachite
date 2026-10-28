@@ -5,6 +5,7 @@
 // Replaces: kappa model-audit skill scripts + ad-hoc jq flattening.
 import { flatten } from "../src/flatten.ts";
 import { audit } from "../src/audit.ts";
+import { runFindCli } from "../src/find.ts";
 
 const [cmd, ...rest] = process.argv.slice(2);
 if (cmd === "flatten") {
@@ -24,6 +25,29 @@ if (cmd === "flatten") {
     process.exit(1);
   }
   process.stdout.write(audit(dir));
+} else if (cmd === "find") {
+  const [dirOrBundle, ...extra] = rest;
+  if (!dirOrBundle) {
+    console.error("usage: malachite find <flattened-dir> | --bundle <tar.gz>");
+    process.exit(1);
+  }
+  if (dirOrBundle === "--bundle" && extra[0]) {
+    const { execFileSync } = await import("node:child_process");
+    execFileSync(
+      "bun",
+      [
+        import.meta.dir + "/malachite.ts",
+        "flatten",
+        "/tmp/kappa/malachite-find-bundle",
+        extra[0],
+      ],
+      { stdio: "inherit" },
+    );
+    process.argv[2] = "/tmp/kappa/malachite-find-bundle";
+    process.exit(runFindCli("/tmp/kappa/malachite-find-bundle"));
+  } else {
+    process.exit(runFindCli(dirOrBundle));
+  }
 } else {
   console.error("usage: malachite flatten|audit ...");
   process.exit(1);
