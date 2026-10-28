@@ -7,6 +7,9 @@ import { flatten } from "../src/flatten.ts";
 import { audit } from "../src/audit.ts";
 import { runFindCli } from "../src/find.ts";
 
+const PHASE_OK = (p: string) =>
+  ["flatten", "find", "audit", "verdict"].includes(p);
+
 const [cmd, ...rest] = process.argv.slice(2);
 if (cmd === "flatten") {
   const [outdir, ...inputs] = rest;
@@ -48,6 +51,21 @@ if (cmd === "flatten") {
   } else {
     process.exit(runFindCli(dirOrBundle));
   }
+} else if (cmd === "chain") {
+  const [phase, stateDir, ...inputs] = rest;
+  if (!stateDir) {
+    console.error(
+      "usage: malachite chain [flatten|find|audit|verdict] <stateDir> [inputs...]",
+    );
+    process.exit(1);
+  }
+  const { runChain } = await import("../src/chain.ts");
+  const state = runChain(
+    PHASE_OK(phase) ? phase : undefined, // "all" or omitted = run remaining phases
+    stateDir,
+    inputs,
+  );
+  console.log(JSON.stringify(state, null, 2));
 } else {
   console.error("usage: malachite flatten|audit ...");
   process.exit(1);

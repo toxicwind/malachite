@@ -42,3 +42,11 @@ daemon-exit/timeout/DNS), IQR numeric outliers, empty-output model calls, parse
 corruption, and claim-vs-reality. Ranked findings; exit 2 = critical (>=9),
 1 = findings, 0 = clean. Verified on an unseen hephaistos-class bundle
 (daemon ENOENT spawn-fail loop + panic + false "verified healthy" claim).
+
+## chain (v3) — phased pipeline for hephaistos + corral
+
+`malachite chain [phase] <stateDir> [inputs...]` — flatten -> find -> audit -> verdict,
+each phase consumes the previous phase state dir; idempotent + resumable per phase;
+`chain-state.json` carries the gate decision (go | block | critical | clean). One phase
+per invocation = hephaistos plugin / corral orchestration primitive: drive, observe,
+resume any link. Exit contract of `find` unchanged (2 = critical).
