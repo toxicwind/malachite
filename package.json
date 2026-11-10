@@ -1,0 +1,36 @@
+{
+  "name": "malachite",
+  "version": "1.0.0",
+  "description": "flatten + audit anything (geode inference plane)",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "malachite": "./bin/malachite.ts"
+  },
+  "scripts": {
+    "dev": "bun --hot run ./bin/malachite.ts",
+    "test": "bun test",
+    "typecheck": "tsgo --noEmit -p tsconfig.json",
+    "lint": "biome lint .",
+    "fmt": "biome format --write .",
+    "build": "bun build ./bin/malachite.ts --outdir ./dist --target bun"
+  },
+  "dependencies": {
+    "bun:sqlite": "*"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.8.3",
+    "@types/bun": "^1.1.0",
+    "bun-types": "npm:@types/bun@latest",
+    "typescript": "^5.4.5"
+  },
+  "module": "./dist/index.js",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "private": true
+}
